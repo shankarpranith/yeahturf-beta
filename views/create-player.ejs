@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Player Card</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="navbar-brand">YEAH<span>TURF!</span></a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+                <a href="/services">Services</a>
+                <a href="/contact">Contact</a>
+                <a href="/games">Games</a>
+                <a href="/players">Find Players</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Create Your Player Card</h1>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container" style="max-width: 700px;">
+            <div class="card">
+                <h3>Enter Your Details</h3>
+                <p style="color: #666; margin-bottom: 1rem;">Your card will be visible to other players looking for teammates.</p>
+                
+                <form action="/players" method="POST">
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" name="name" class="form-control" placeholder="e.g., Rohan V." required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="primarySport">Primary Sport</label>
+                        <input type="text" id="primarySport" name="primarySport" class="form-control" placeholder="e.g., Football" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="skillLevel">Skill Level</label>
+                        <input type="text" id="skillLevel" name="skillLevel" class="form-control" placeholder="e.g., Intermediate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" name="location" class="form-control" placeholder="e.g., Koramangala" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="availability">Availability</label>
+                        <input type="text" id="availability" name="availability" class="form-control" placeholder="e.g., Weekends" required>
+                    </div>
+
+                    <button type="submit" class="btn" style="width: 100%;">Create Card</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Yeahturf! All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

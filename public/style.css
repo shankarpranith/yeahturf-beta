@@ -1,0 +1,215 @@
+/* --- Google Font Import --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+/* --- CSS Variables (Your Sporty Theme) --- */
+:root {
+    --primary-color: #10B981; /* Sporty Emerald Green */
+    --primary-hover: #0F9D6B; /* Darker green for hover */
+    --dark-color: #2c3e50;    /* Dark Blue/Gray */
+    --light-color: #ffffff;   /* White */
+    --bg-light: #f4f7f6;      /* Lightest Gray Background */
+    --text-color: #333;
+    --border-color: #e0e0e0;
+    --font-family: 'Poppins', system-ui, sans-serif;
+}
+
+/* --- Global Reset & Base Styles --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--bg-light);
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+a {
+    text-decoration: none;
+    color: var(--primary-color);
+}
+
+h1, h2, h3 {
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+
+/* --- Navigation Bar --- */
+.navbar {
+    background: var(--dark-color);
+    color: var(--light-color);
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--light-color);
+}
+
+.navbar-brand span { /* For a little flair */
+    color: var(--primary-color);
+}
+
+.nav-links a {
+    color: var(--light-color);
+    margin-left: 1.5rem;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--primary-color);
+}
+
+/* --- Hero Section (for Homepage) --- */
+.hero {
+    /* You can change this background image! */
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(https://images.unsplash.com/photo-1526232761682-db2403c42198?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNzEyNjZ8MHwxfGFsbHx8fHx8fHx8fDE3MzE4NTA1ODZ8&ixlib=rb-4.0.3&q=80&w=1080);
+    background-size: cover;
+    background-position: center;
+    color: var(--light-color);
+    height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 1.5rem;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+}
+
+.hero p {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+/* --- Utility Classes (Buttons, Cards) --- */
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: var(--primary-color);
+    color: var(--light-color) !important; /* Overrides other 'a' tags */
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn:hover {
+    background: var(--primary-hover);
+}
+
+.btn-secondary {
+    background: var(--light-color);
+    color: var(--primary-color) !important;
+    border: 1px solid var(--primary-color);
+}
+.btn-secondary:hover {
+    background: #f0fdf4; /* A very light green */
+    border-color: var(--primary-hover);
+}
+
+/* ... existing button styles ... */
+
+.btn-danger {
+    background-color: #ef4444; /* Red */
+    color: white;
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    margin-top: 1rem;
+}
+.btn-danger:hover {
+    background-color: #dc2626; /* Darker Red */
+}
+
+/* Page Header for About, Contact, etc. */
+.page-header {
+    background: var(--dark-color);
+    color: var(--light-color);
+    padding: 2rem 0;
+    text-align: center;
+}
+
+/* Main content wrapper */
+.main-content {
+    padding: 3rem 0;
+}
+
+.card {
+    background: var(--light-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.card h3 {
+    color: var(--primary-color);
+}
+
+/* Grid for cards (like on Services page) */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+/* --- Form Styling (Contact Page) --- */
+.form-group {
+    margin-bottom: 1rem;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+/* --- Footer --- */
+footer {
+    text-align: center;
+    padding: 2rem;
+    background: var(--dark-color);
+    color: var(--light-color);
+    margin-top: 3rem;
+}

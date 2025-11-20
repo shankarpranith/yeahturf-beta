@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Players</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        /* Small style addition for the player card */
+        .player-card {
+            border-left: 5px solid var(--primary-color);
+        }
+        .player-card strong {
+            color: var(--dark-color);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="navbar-brand">YEAH<span>TURF!</span></a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+                <a href="/services">Services</a>
+                <a href="/contact">Contact</a>
+                <a href="/games">Games</a>
+                <a href="/players">Find Players</a> </div>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Find Players</h1>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <p style="font-size: 1.1rem; text-align: center; margin-bottom: 2rem;">
+                Browse players in your area. Need a teammate? Send them an invite!
+            </p>
+
+            <div style="text-align: center; margin-bottom: 2.5rem;">
+        <a href="/players/new" class="btn">Create Your Player Card</a>
+     </div>
+
+            <div class="grid">
+                <% players.forEach(player => { %>
+                    <div class="card player-card">
+                        <h3 style="margin-bottom: 0.5rem;"><%= player.name %></h3>
+                        <p style="color: var(--primary-color); font-weight: 600;">
+                            <%= player.primarySport %> - <%= player.skillLevel %>
+                        </p>
+                        <p>
+                            <strong>Location:</strong> <%= player.location %><br>
+                            <strong>Available:</strong> <%= player.availability %>
+                        </p>
+                        <a href="#" class="btn" style="width: 100%; text-align: center; margin-top: 1rem;">View Profile</a>
+                    </div>
+                <% }) %>
+            </div>
+
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Yeahturf! All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

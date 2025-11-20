@@ -1,0 +1,34 @@
+[
+    {
+        "id": 1,
+        "name": "Rohan V.",
+        "primarySport": "Football",
+        "skillLevel": "Intermediate",
+        "availability": "Weekends",
+        "location": "Koramangala"
+    },
+    {
+        "id": 2,
+        "name": "Anjali S.",
+        "primarySport": "Cricket",
+        "skillLevel": "Advanced",
+        "availability": "Evenings",
+        "location": "Marathahalli"
+    },
+    {
+        "id": 3,
+        "name": "Mike L.",
+        "primarySport": "Football",
+        "skillLevel": "Beginner",
+        "availability": "Anytime",
+        "location": "Indiranagar"
+    },
+    {
+        "id": 4,
+        "name": "Priya K.",
+        "primarySport": "Badminton",
+        "skillLevel": "Intermediate",
+        "availability": "Mornings",
+        "location": "Whitefield"
+    }
+]

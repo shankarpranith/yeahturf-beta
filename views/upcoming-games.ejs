@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upcoming Games</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="navbar-brand">YEAH<span>TURF!</span></a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+                <a href="/services">Services</a>
+                <a href="/contact">Contact</a>
+                <a href="/games">Games</a>
+                <a href="/players">Find Players</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Upcoming Games</h1>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            
+            <p style="font-size: 1.1rem; text-align: center; margin-bottom: 2rem;">
+                Find an open game and join! Or, post your own game.
+            </p>
+
+            <form action="/games" method="GET" style="display: flex; justify-content: center; gap: 10px; margin-bottom: 1rem;">
+    <input 
+        type="text" 
+        name="search" 
+        placeholder="Search location or title..." 
+        class="form-control" 
+        style="max-width: 300px; display: inline-block;"
+    >
+    <button type="submit" class="btn">Search</button>
+    <% if (locals.isSearching) { %>
+        <a href="/games" class="btn-secondary" style="display:inline-flex; align-items:center; text-decoration:none;">Clear</a>
+    <% } %>
+</form>
+
+            <div style="text-align: center; margin-bottom: 1.5rem; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+    <span style="font-weight: bold; align-self: center;">Filter by:</span>
+    
+    <a href="/games" class="btn-secondary" style="padding: 5px 15px; border-radius: 20px; text-decoration: none; border: 1px solid #ccc;">All</a>
+    
+    <a href="/games?sport=FOOTBALL" class="btn-secondary" style="padding: 5px 15px; border-radius: 20px; text-decoration: none; border: 1px solid #ccc;">Football</a>
+    <a href="/games?sport=CRICKET" class="btn-secondary" style="padding: 5px 15px; border-radius: 20px; text-decoration: none; border: 1px solid #ccc;">Cricket</a>
+    <a href="/games?sport=BADMINTON" class="btn-secondary" style="padding: 5px 15px; border-radius: 20px; text-decoration: none; border: 1px solid #ccc;">Badminton</a>
+</div>
+
+            <div style="text-align: center; margin-bottom: 2.5rem;">
+                <a href="/games/new" class="btn">Post Your Own Game</a>
+            </div>
+
+            <div class="grid">
+                <% games.forEach(game => { %>
+                    <div class="card">
+                        <h3><%= game.title %></h3>
+                        <p>
+                            <strong>Sport:</strong> <%= game.sport %> <br>
+                            <strong>Location:</strong> <%= game.location %> <br>
+                            <strong>When:</strong> <%= game.date %> at <%= game.time %>
+                        </p>
+                        <p style="font-size: 1.2rem; font-weight: bold; color: var(--primary-color);">
+                            <%= game.playersNeeded %> Spots Open
+                        </p>
+                        
+                        <div style="display: flex; gap: 10px; align-items: center; margin-top: 1rem;">
+                            <% if (game.playersNeeded > 0) { %>
+    <form action="/games/join/<%= game.id %>" method="POST" style="flex: 1; margin: 0;">
+        <button type="submit" class="btn" style="width: 100%;">Join Game</button>
+    </form>
+<% } else { %>
+    <button class="btn" style="flex: 1; background-color: #9ca3af; cursor: not-allowed;" disabled>Game Full</button>
+<% } %>
+
+                            <form action="/games/delete/<%= game.id %>" method="POST" style="margin: 0;" onsubmit="
+    const code = prompt('Enter the Secret Code to delete this game:');
+    if (!code) return false; // Cancel if no code entered
+    this.action = this.action + '?code=' + code; // Add code to the URL
+    return true;
+">
+                                <button type="submit" class="btn btn-danger" style="margin-top: 0;">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                <% }) %> 
+            </div> </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Yeahturf! All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

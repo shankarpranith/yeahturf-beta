@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="navbar-brand">YEAH<span>TURF!</span></a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+                <a href="/services">Services</a>
+                <a href="/contact">Contact</a>
+                <a href="/games">Games</a>
+                <a href="/players">Find Players</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Get in Touch</h1>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="grid"> <div class="card">
+                    <h3>Contact Info</h3>
+                    <p style="margin-bottom: 1.5rem;">Have a question about booking a turf or finding a team? Reach out to us directly.</p>
+                    
+                    <div class="form-group">
+                        <label style="color: var(--primary-color); font-weight: 600;">Phone</label>
+                        <a href="tel:+919449772563" style="font-size: 1.1rem; color: var(--text-color);">+91 9449772563</a>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="color: var(--primary-color); font-weight: 600;">Email</label>
+                        <a href="mailto:shankarpranith.ad23@bmsce.ac.in" style="font-size: 1.1rem; color: var(--text-color);">shankarpranith.ad23@bmsce.ac.in</a>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="color: var(--primary-color); font-weight: 600;">Location</label>
+                        <p style="font-size: 1.1rem; margin: 0;">Bengaluru, Karnataka</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Send a Message</h3>
+                    <form action="/submit-contact" method="POST">
+                        <div class="form-group">
+                            <label for="name">Your Name</label>
+                            <input type="text" id="name" name="name" class="form-control" placeholder="John Doe" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Your Email</label>
+                            <input type="email" id="email" name="email" class="form-control" placeholder="john@example.com" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" rows="5" class="form-control" placeholder="I need help with..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn" style="width: 100%;">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Yeahturf! All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

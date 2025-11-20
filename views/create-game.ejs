@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post a New Game</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="navbar-brand">YEAH<span>TURF!</span></a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+                <a href="/services">Services</a>
+                <a href="/contact">Contact</a>
+                <a href="/games">Games</a>
+                <a href="/players">Find Players</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Post a New Game</h1>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container" style="max-width: 700px;">
+            <div class="card">
+                <h3>Enter Your Game Details</h3>
+                
+                <form action="/games" method="POST">
+                    <div class="form-group">
+                        <label for="title">Game Title</label>
+                        <input type="text" id="title" name="title" class="form-control" placeholder="e.g., Evening 5-a-side" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sport">Sport</label>
+                        <input type="text" id="sport" name="sport" class="form-control" placeholder="e.g., Football" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" name="location" class="form-control" placeholder="e.g., Koramangala Turf Park" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input type="text" id="date" name="date" class="form-control" placeholder="e.g., Nov 25, 2025" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="time">Time</label>
+                        <input type="text" id="time" name="time" class="form-control" placeholder="e.g., 8:00 PM" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="playersNeeded">Spots Open</label>
+                        <input type="number" id="playersNeeded" name="playersNeeded" class="form-control" placeholder="e.g., 3" required>
+                    </div>
+
+                    <div class="form-group" style="background: #fff3cd; padding: 10px; border-radius: 5px; border: 1px solid #ffeeba;">
+                        <label for="secretCode" style="color: #856404;">Set a Secret Delete Code</label>
+                        <input type="password" id="secretCode" name="secretCode" class="form-control" placeholder="e.g., 1234" required>
+                        <small>You will need this code to delete the game later.</small>
+                    </div>
+
+                    <button type="submit" class="btn" style="width: 100%;">Post Game</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Yeahturf! All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
