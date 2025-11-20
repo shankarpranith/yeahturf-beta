@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Yeahturf</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+    <%- include('partials/navbar') %>
+
+    <main class="main-content">
+        <div class="container" style="max-width: 400px; margin-top: 3rem;">
+            <div class="card" style="text-align: center;">
+                <h2>Join the Squad</h2>
+                <p style="margin-bottom: 1.5rem; color: #666;">Create an account to post games.</p>
+
+                <form id="signup-form">
+                    <div class="form-group">
+                        <input type="email" id="email" class="form-control" placeholder="Email Address" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="password" class="form-control" placeholder="Password (6+ chars)" required>
+                    </div>
+                    <button type="submit" class="btn" style="width: 100%;">Sign Up</button>
+                </form>
+                
+                <p style="margin-top: 1rem;">Already have an account? <a href="/login" style="color: var(--primary-color);">Login</a></p>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        // 1. Import from the CDN URLs (Browser compatible)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        // 2. Your Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyAgcCQVw7uupQr0FSMwyaLRLQRcus1ss3g",
+            authDomain: "yeahturf-4cb5e.firebaseapp.com",
+            projectId: "yeahturf-4cb5e",
+            storageBucket: "yeahturf-4cb5e.firebasestorage.app",
+            messagingSenderId: "1068687401138",
+            appId: "1:1068687401138:web:1791b74bfa77d64eb969ab"
+        };
+
+        // 3. Initialize Firebase (Only once!)
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // 4. Handle Sign Up
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                alert("Account Created! Welcome, " + userCredential.user.email);
+                window.location.href = '/games'; // Redirect to games page
+            } catch (error) {
+                console.error(error);
+                alert("Error: " + error.message);
+            }
+        });
+    </script>
+
+</body>
+</html>
