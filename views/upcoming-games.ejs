@@ -8,25 +8,7 @@
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="container">
-            <a href="/" class="navbar-brand">YEAH<span>TURF!</span></a>
-            <div class="nav-links">
-                <a href="/">Home</a>
-                <a href="/about">About</a>
-                <a href="/services">Services</a>
-                <a href="/contact">Contact</a>
-                <a href="/games">Games</a>
-                <a href="/players">Find Players</a>
-            </div>
-        </div>
-    </nav>
-
-    <header class="page-header">
-        <div class="container">
-            <h1>Upcoming Games</h1>
-        </div>
-    </header>
+    <%- include('partials/navbar') %>
 
     <main class="main-content">
         <div class="container">
@@ -36,28 +18,20 @@
             </p>
 
             <form action="/games" method="GET" style="display: flex; justify-content: center; gap: 10px; margin-bottom: 1rem;">
-    <input 
-        type="text" 
-        name="search" 
-        placeholder="Search location or title..." 
-        class="form-control" 
-        style="max-width: 300px; display: inline-block;"
-    >
-    <button type="submit" class="btn">Search</button>
-    <% if (locals.isSearching) { %>
-        <a href="/games" class="btn-secondary" style="display:inline-flex; align-items:center; text-decoration:none;">Clear</a>
-    <% } %>
-</form>
+                <input type="text" name="search" placeholder="Search location or title..." class="form-control" style="max-width: 300px; display: inline-block;">
+                <button type="submit" class="btn">Search</button>
+                <% if (locals.isSearching) { %>
+                    <a href="/games" class="btn-secondary" style="display:inline-flex; align-items:center; text-decoration:none;">Clear</a>
+                <% } %>
+            </form>
 
             <div style="text-align: center; margin-bottom: 1.5rem; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-    <span style="font-weight: bold; align-self: center;">Filter by:</span>
-    
-    <a href="/games" class="btn-secondary" style="padding: 5px 15px; border-radius: 20px; text-decoration: none; border: 1px solid #ccc;">All</a>
-    
-    <a href="/games?sport=FOOTBALL" class="btn-secondary" style="padding: 5px 15px; border-radius: 20px; text-decoration: none; border: 1px solid #ccc;">Football</a>
-    <a href="/games?sport=CRICKET" class="btn-secondary" style="padding: 5px 15px; border-radius: 20px; text-decoration: none; border: 1px solid #ccc;">Cricket</a>
-    <a href="/games?sport=BADMINTON" class="btn-secondary" style="padding: 5px 15px; border-radius: 20px; text-decoration: none; border: 1px solid #ccc;">Badminton</a>
-</div>
+                <span style="font-weight: bold; align-self: center;">Filter by:</span>
+                <a href="/games" class="btn-secondary" style="padding: 5px 15px; border-radius: 20px; text-decoration: none; border: 1px solid #ccc;">All</a>
+                <a href="/games?sport=Football" class="btn-secondary" style="padding: 5px 15px; border-radius: 20px; text-decoration: none; border: 1px solid #ccc;">Football</a>
+                <a href="/games?sport=Cricket" class="btn-secondary" style="padding: 5px 15px; border-radius: 20px; text-decoration: none; border: 1px solid #ccc;">Cricket</a>
+                <a href="/games?sport=Badminton" class="btn-secondary" style="padding: 5px 15px; border-radius: 20px; text-decoration: none; border: 1px solid #ccc;">Badminton</a>
+            </div>
 
             <div style="text-align: center; margin-bottom: 2.5rem;">
                 <a href="/games/new" class="btn">Post Your Own Game</a>
@@ -77,22 +51,26 @@
                         </p>
                         
                         <div style="display: flex; gap: 10px; align-items: center; margin-top: 1rem;">
+                            
                             <% if (game.playersNeeded > 0) { %>
-    <form action="/games/join/<%= game.id %>" method="POST" style="flex: 1; margin: 0;">
-        <button type="submit" class="btn" style="width: 100%;">Join Game</button>
-    </form>
-<% } else { %>
-    <button class="btn" style="flex: 1; background-color: #9ca3af; cursor: not-allowed;" disabled>Game Full</button>
-<% } %>
+                                <form action="/games/join/<%= game.id %>" method="POST" style="flex: 1; margin: 0;">
+                                    <button type="submit" class="btn" style="width: 100%;">Join Game</button>
+                                </form>
+                            <% } else { %>
+                                <button class="btn" style="flex: 1; background-color: #9ca3af; cursor: not-allowed;" disabled>Game Full</button>
+                            <% } %>
 
-                            <form action="/games/delete/<%= game.id %>" method="POST" style="margin: 0;" onsubmit="
-    const code = prompt('Enter the Secret Code to delete this game:');
-    if (!code) return false; // Cancel if no code entered
-    this.action = this.action + '?code=' + code; // Add code to the URL
-    return true;
-">
+                            <form 
+                                action="/games/delete/<%= game.id %>" 
+                                method="POST" 
+                                class="delete-form"
+                                data-owner="<%= game.createdBy %>"
+                                style="display: none; margin: 0;"
+                                onsubmit="return confirm('Delete this game?');"
+                            >
                                 <button type="submit" class="btn btn-danger" style="margin-top: 0;">Delete</button>
                             </form>
+
                         </div>
                     </div>
                 <% }) %> 
@@ -102,6 +80,30 @@
     <footer>
         <p>&copy; 2025 Yeahturf! All rights reserved.</p>
     </footer>
+
+    <script type="module">
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        
+        // Wait for navbar auth to be ready, or get it directly
+        const auth = window.auth || getAuth();
+
+        onAuthStateChanged(auth, (user) => {
+            const deleteForms = document.querySelectorAll('.delete-form');
+
+            if (user) {
+                // User is logged in. Check which games are theirs.
+                deleteForms.forEach(form => {
+                    const ownerId = form.getAttribute('data-owner');
+                    if (ownerId === user.uid) {
+                        form.style.display = 'block'; // Show button!
+                    }
+                });
+            } else {
+                // User logged out. Hide all delete buttons.
+                deleteForms.forEach(form => form.style.display = 'none');
+            }
+        });
+    </script>
 
 </body>
 </html>

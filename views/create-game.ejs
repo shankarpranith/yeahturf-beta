@@ -3,71 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Post a New Game</title>
+    <title>Post a Game</title>
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="container">
-            <a href="/" class="navbar-brand">YEAH<span>TURF!</span></a>
-            <div class="nav-links">
-                <a href="/">Home</a>
-                <a href="/about">About</a>
-                <a href="/services">Services</a>
-                <a href="/contact">Contact</a>
-                <a href="/games">Games</a>
-                <a href="/players">Find Players</a>
-            </div>
-        </div>
-    </nav>
-
-    <header class="page-header">
-        <div class="container">
-            <h1>Post a New Game</h1>
-        </div>
-    </header>
+    <%- include('partials/navbar') %>
 
     <main class="main-content">
-        <div class="container" style="max-width: 700px;">
+        <div class="container" style="max-width: 600px;">
             <div class="card">
-                <h3>Enter Your Game Details</h3>
+                <h2>Post a New Game</h2>
                 
-                <form action="/games" method="POST">
+                <form action="/games" method="POST" id="create-game-form">
+                    
+                    <input type="hidden" name="createdBy" id="createdBy">
+                    <input type="hidden" name="creatorEmail" id="creatorEmail">
+
                     <div class="form-group">
                         <label for="title">Game Title</label>
-                        <input type="text" id="title" name="title" class="form-control" placeholder="e.g., Evening 5-a-side" required>
+                        <input type="text" id="title" name="title" class="form-control" placeholder="e.g. Sunday Cricket Match" required>
                     </div>
 
                     <div class="form-group">
                         <label for="sport">Sport</label>
-                        <input type="text" id="sport" name="sport" class="form-control" placeholder="e.g., Football" required>
+                        <select id="sport" name="sport" class="form-control">
+                            <option value="Cricket">Cricket</option>
+                            <option value="Football">Football</option>
+                            <option value="Badminton">Badminton</option>
+                            <option value="Tennis">Tennis</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="location">Location</label>
-                        <input type="text" id="location" name="location" class="form-control" placeholder="e.g., Koramangala Turf Park" required>
+                        <label for="location">Location (Turf Name)</label>
+                        <input type="text" id="location" name="location" class="form-control" placeholder="e.g. Indiranagar Turf Park" required>
                     </div>
 
-                    <div class="form-group">
-                        <label for="date">Date</label>
-                        <input type="text" id="date" name="date" class="form-control" placeholder="e.g., Nov 25, 2025" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="time">Time</label>
-                        <input type="text" id="time" name="time" class="form-control" placeholder="e.g., 8:00 PM" required>
+                    <div class="form-group" style="display: flex; gap: 10px;">
+                        <div style="flex: 1;">
+                            <label for="date">Date</label>
+                            <input type="date" id="date" name="date" class="form-control" required>
+                        </div>
+                        <div style="flex: 1;">
+                            <label for="time">Time</label>
+                            <input type="time" id="time" name="time" class="form-control" required>
+                        </div>
                     </div>
 
                     <div class="form-group">
                         <label for="playersNeeded">Spots Open</label>
-                        <input type="number" id="playersNeeded" name="playersNeeded" class="form-control" placeholder="e.g., 3" required>
-                    </div>
-
-                    <div class="form-group" style="background: #fff3cd; padding: 10px; border-radius: 5px; border: 1px solid #ffeeba;">
-                        <label for="secretCode" style="color: #856404;">Set a Secret Delete Code</label>
-                        <input type="password" id="secretCode" name="secretCode" class="form-control" placeholder="e.g., 1234" required>
-                        <small>You will need this code to delete the game later.</small>
+                        <input type="number" id="playersNeeded" name="playersNeeded" class="form-control" placeholder="e.g. 3" required>
                     </div>
 
                     <button type="submit" class="btn" style="width: 100%;">Post Game</button>
@@ -76,9 +62,26 @@
         </div>
     </main>
 
-    <footer>
-        <p>&copy; 2025 Yeahturf! All rights reserved.</p>
-    </footer>
+    <script type="module">
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        // Reuse the app initialized in Navbar
+        // We wait 1 second for Navbar to load, or we initialize again safely
+        const auth = window.auth || getAuth(); 
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is logged in!
+                // Fill the hidden inputs
+                document.getElementById('createdBy').value = user.uid;
+                document.getElementById('creatorEmail').value = user.email;
+            } else {
+                // NO USER? KICK THEM OUT!
+                alert("You must be logged in to post a game!");
+                window.location.href = '/login';
+            }
+        });
+    </script>
 
 </body>
 </html>

@@ -54,15 +54,28 @@ app.get('/games/new', (req, res) => {
     res.render('create-game');
 });
 
+// 2. HANDLE 'Create Game' Submission
 app.post('/games', async (req, res) => {
     try {
-        const newGame = req.body;
-        newGame.playersNeeded = parseInt(newGame.playersNeeded);
-        newGame.createdAt = admin.firestore.FieldValue.serverTimestamp();
-        
+        const newGame = {
+            title: req.body.title,
+            sport: req.body.sport,
+            location: req.body.location,
+            date: req.body.date,
+            time: req.body.time,
+            playersNeeded: parseInt(req.body.playersNeeded),
+            
+            // NEW: Save the User Info (No more secret code needed!)
+            createdBy: req.body.createdBy,      // The UID from Firebase
+            creatorEmail: req.body.creatorEmail, // The email
+            
+            createdAt: admin.firestore.FieldValue.serverTimestamp()
+        };
+
         await db.collection('games').add(newGame);
         res.redirect('/games');
     } catch (error) {
+        console.error("Error adding game: ", error);
         res.status(500).send("Error saving game");
     }
 });
@@ -89,20 +102,19 @@ app.get('/games', async (req, res) => {
     }
 });
 
+// DELETE a game (Updated for Login System)
 app.post('/games/delete/:id', async (req, res) => {
     try {
         const id = req.params.id;
-        const userCode = req.query.code;
-        const doc = await db.collection('games').doc(id).get();
         
-        if (doc.exists && doc.data().secretCode === userCode) {
-            await db.collection('games').doc(id).delete();
-            res.redirect('/games');
-        } else {
-            res.send("WRONG CODE");
-        }
+        // Simple Delete (We trust the frontend auth for now)
+        await db.collection('games').doc(id).delete();
+        
+        res.redirect('/games');
+
     } catch (error) {
-        res.status(500).send("Error deleting");
+        console.error("Error deleting game: ", error);
+        res.status(500).send("Error deleting game");
     }
 });
 
