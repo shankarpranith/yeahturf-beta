@@ -118,16 +118,46 @@ app.post('/games/delete/:id', async (req, res) => {
     }
 });
 
+// JOIN a game (Add User Name to Roster)
+// JOIN a game (Save Name AND Phone)
 app.post('/games/join/:id', async (req, res) => {
     try {
-        const gameRef = db.collection('games').doc(req.params.id);
+        const id = req.params.id;
+        
+        // Create the player object
+        const newPlayer = {
+            name: req.body.name,
+            phone: req.body.phone
+        };
+        
+        const gameRef = db.collection('games').doc(id);
         const doc = await gameRef.get();
-        if (doc.exists && doc.data().playersNeeded > 0) {
-            await gameRef.update({ playersNeeded: doc.data().playersNeeded - 1 });
+
+        if (!doc.exists) return res.send("Game not found");
+
+        const game = doc.data();
+        const currentRoster = game.roster || [];
+
+        // Check if user is already in (Simple check by name for now)
+        // ideally we check by UID, but name is fine for MVP
+        const alreadyJoined = currentRoster.some(p => p.name === newPlayer.name);
+
+        if (alreadyJoined) {
+             return res.redirect('/games');
         }
+
+        if (game.playersNeeded > 0) {
+            await gameRef.update({ 
+                playersNeeded: admin.firestore.FieldValue.increment(-1),
+                roster: admin.firestore.FieldValue.arrayUnion(newPlayer) 
+            });
+        }
+        
         res.redirect('/games');
+
     } catch (error) {
-        res.status(500).send("Error joining");
+        console.error("Error joining game: ", error);
+        res.status(500).send("Error joining game");
     }
 });
 

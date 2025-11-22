@@ -17,6 +17,7 @@
                 Find an open game and join! Or, post your own game.
             </p>
 
+            <!-- SEARCH BAR -->
             <form action="/games" method="GET" style="display: flex; justify-content: center; gap: 10px; margin-bottom: 1rem;">
                 <input type="text" name="search" placeholder="Search location or title..." class="form-control" style="max-width: 300px; display: inline-block;">
                 <button type="submit" class="btn">Search</button>
@@ -25,6 +26,7 @@
                 <% } %>
             </form>
 
+            <!-- Filter Buttons -->
             <div style="text-align: center; margin-bottom: 1.5rem; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
                 <span style="font-weight: bold; align-self: center;">Filter by:</span>
                 <a href="/games" class="btn-secondary" style="padding: 5px 15px; border-radius: 20px; text-decoration: none; border: 1px solid #ccc;">All</a>
@@ -33,10 +35,12 @@
                 <a href="/games?sport=Badminton" class="btn-secondary" style="padding: 5px 15px; border-radius: 20px; text-decoration: none; border: 1px solid #ccc;">Badminton</a>
             </div>
 
+            <!-- Button to Post Game -->
             <div style="text-align: center; margin-bottom: 2.5rem;">
                 <a href="/games/new" class="btn">Post Your Own Game</a>
             </div>
 
+            <!-- Game Grid -->
             <div class="grid">
                 <% games.forEach(game => { %>
                     <div class="card">
@@ -46,64 +50,149 @@
                             <strong>Location:</strong> <%= game.location %> <br>
                             <strong>When:</strong> <%= game.date %> at <%= game.time %>
                         </p>
+                        
                         <p style="font-size: 1.2rem; font-weight: bold; color: var(--primary-color);">
                             <%= game.playersNeeded %> Spots Open
                         </p>
+
+                        <!-- NEW: Display the Roster -->
+                        <% if (game.roster && game.roster.length > 0) { %>
+                            <div style="background: #f0fdf4; padding: 10px; border-radius: 5px; margin: 10px 0; font-size: 0.9rem;">
+                                <strong>Lineup:</strong> <%= game.roster.join(', ') %>
+                            </div>
+                        <% } else { %>
+                            <div style="margin: 10px 0; font-size: 0.9rem; color: #888; font-style: italic;">
+                                Be the first to join!
+                            </div>
+                        <% } %>
                         
-                        <div style="display: flex; gap: 10px; align-items: center; margin-top: 1rem;">
-                            
-                            <% if (game.playersNeeded > 0) { %>
-                                <form action="/games/join/<%= game.id %>" method="POST" style="flex: 1; margin: 0;">
-                                    <button type="submit" class="btn" style="width: 100%;">Join Game</button>
-                                </form>
-                            <% } else { %>
-                                <button class="btn" style="flex: 1; background-color: #9ca3af; cursor: not-allowed;" disabled>Game Full</button>
-                            <% } %>
-
-                            <form 
-                                action="/games/delete/<%= game.id %>" 
-                                method="POST" 
-                                class="delete-form"
-                                data-owner="<%= game.createdBy %>"
-                                style="display: none; margin: 0;"
-                                onsubmit="return confirm('Delete this game?');"
-                            >
-                                <button type="submit" class="btn btn-danger" style="margin-top: 0;">Delete</button>
-                            </form>
-
-                        </div>
-                    </div>
-                <% }) %> 
-            </div> </div>
-    </main>
-
-    <footer>
-        <p>&copy; 2025 Yeahturf! All rights reserved.</p>
-    </footer>
-
-    <script type="module">
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+                        <!-- Actions Area -->
+                       <div style="display: flex; gap: 10px; align-items: center; margin-top: 1rem;">
         
-        // Wait for navbar auth to be ready, or get it directly
-        const auth = window.auth || getAuth();
+        <% if (game.playersNeeded > 0) { %>
+            <button 
+                onclick="openJoinModal('<%= game.id %>', '<%= game.title %>')" 
+                class="btn" 
+                style="width: 100%; flex: 1;">
+                Join Game
+            </button>
+        <% } else { %>
+            <button class="btn" style="flex: 1; background-color: #9ca3af; cursor: not-allowed;" disabled>Game Full</button>
+        <% } %>
 
-        onAuthStateChanged(auth, (user) => {
-            const deleteForms = document.querySelectorAll('.delete-form');
+        <form 
+            action="/games/delete/<%= game.id %>" 
+            method="POST" 
+            class="delete-form"
+            data-owner="<%= game.createdBy %>"
+            style="display: none; margin: 0;"
+            onsubmit="return confirm('Delete this game?');"
+        >
+            <button type="submit" class="btn btn-danger" style="margin-top: 0;">Delete</button>
+        </form>
+    </div>
 
-            if (user) {
-                // User is logged in. Check which games are theirs.
-                deleteForms.forEach(form => {
-                    const ownerId = form.getAttribute('data-owner');
-                    if (ownerId === user.uid) {
-                        form.style.display = 'block'; // Show button!
-                    }
-                });
-            } else {
-                // User logged out. Hide all delete buttons.
-                deleteForms.forEach(form => form.style.display = 'none');
-            }
-        });
-    </script>
+    <% if (game.roster && game.roster.length > 0) { %>
+        <div style="margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px;">
+            <strong style="font-size: 0.9rem;">Players Joined:</strong>
+            <ul style="list-style: none; padding: 0; margin-top: 5px;">
+                <% game.roster.forEach(player => { %>
+                    <li style="font-size: 0.9rem; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center;">
+                        <span>👤 <%= player.name %></span>
+                        
+                        <a href="https://wa.me/<%= player.phone %>" 
+                           target="_blank"
+                           class="whatsapp-link btn-secondary"
+                           data-creator="<%= game.createdBy %>"
+                           style="display: none; padding: 2px 8px; font-size: 0.7rem; background-color: #25D366; color: white; border: none; text-decoration: none; border-radius: 4px;">
+                           Chat 💬
+                        </a>
+                    </li>
+                <% }) %>
+            </ul>
+        </div>
+    <% } %>
+
+<div id="joinModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+    <div style="background: white; padding: 2rem; border-radius: 10px; width: 90%; max-width: 400px; position: relative;">
+        <h3 id="modalGameTitle">Join Game</h3>
+        <p>Please provide your details so the host can contact you.</p>
+        
+        <form id="joinForm" method="POST">
+            <div class="form-group">
+                <label>Your Name</label>
+                <input type="text" name="name" id="modalName" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Phone Number (for WhatsApp)</label>
+                <input type="tel" name="phone" class="form-control" placeholder="e.g. 919999999999" required>
+                <small style="color: #666;">Enter with country code (e.g. 91 for India) no + symbol.</small>
+            </div>
+            
+            <button type="submit" class="btn" style="width: 100%;">Confirm Join</button>
+            <button type="button" onclick="closeJoinModal()" class="btn-secondary" style="width: 100%; margin-top: 10px; border: 1px solid #ccc;">Cancel</button>
+        </form>
+    </div>
+</div>
+
+<script type="module">
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    const auth = window.auth || getAuth();
+
+    // MODAL FUNCTIONS (Make them global so HTML can use them)
+    window.openJoinModal = function(gameId, gameTitle) {
+        // Check if logged in first
+        if (!auth.currentUser) {
+            alert("Please login to join!");
+            window.location.href = '/login';
+            return;
+        }
+
+        const modal = document.getElementById('joinModal');
+        const form = document.getElementById('joinForm');
+        const title = document.getElementById('modalGameTitle');
+        const nameInput = document.getElementById('modalName');
+
+        // Set the form action dynamically
+        form.action = `/games/join/${gameId}`;
+        title.innerText = `Join: ${gameTitle}`;
+        
+        // Auto-fill name from Auth
+        nameInput.value = auth.currentUser.email.split('@')[0];
+
+        modal.style.display = 'flex';
+    }
+
+    window.closeJoinModal = function() {
+        document.getElementById('joinModal').style.display = 'none';
+    }
+
+    // AUTH LOGIC
+    onAuthStateChanged(auth, (user) => {
+        // 1. Handle Delete Buttons
+        const deleteForms = document.querySelectorAll('.delete-form');
+        
+        // 2. Handle WhatsApp Buttons (Only Creator should see them)
+        const waLinks = document.querySelectorAll('.whatsapp-link');
+
+        if (user) {
+            // Show Delete if Owner
+            deleteForms.forEach(form => {
+                if (form.getAttribute('data-owner') === user.uid) form.style.display = 'block';
+            });
+
+            // Show WhatsApp if Creator
+            waLinks.forEach(link => {
+                if (link.getAttribute('data-creator') === user.uid) {
+                    link.style.display = 'inline-block';
+                }
+            });
+        } else {
+            deleteForms.forEach(f => f.style.display = 'none');
+            waLinks.forEach(l => l.style.display = 'none');
+        }
+    });
+</script>
 
 </body>
 </html>
