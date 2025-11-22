@@ -1,65 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-g">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Yeahturf!</title>
-    
+    <title>Yeahturf! - Play More Sports</title>
     <link rel="stylesheet" href="style.css">
-    
-    </head>
+</head>
 <body>
 
     <nav class="navbar">
         <div class="container">
             <a href="/" class="navbar-brand">YEAH<span>TURF!</span></a>
             <div class="nav-links">
-                <a href="/">Home</a>
-                <a href="/about">About</a>
-                <a href="/services">Services</a>
-                <a href="/contact">Contact</a>
-                <a href="/games">Games</a>
+                <a href="/games">Find Games</a>
                 <a href="/players">Find Players</a>
+                <a href="/games/new" class="btn">Post Game</a>
             </div>
         </div>
     </nav>
 
-   <header class="hero">
-    <h1>Find Players. Book Turfs.</h1>
-    <p>Your one-stop platform for connecting with local players and booking your next game.</p>
-    
-    <div class="hero-buttons" style="display: flex; gap: 1rem; margin-top: 1rem;">
-        <a href="/games" class="btn">Find a Game</a>
-        <a href="/players" class="btn btn-secondary">Find Players</a>
-    </div>
-</header>
-
-    <main class="main-content">
+    <header class="hero">
         <div class="container">
-            <h2>Why Choose Us?</h2>
-            <p>We're building this app to solve the biggest problems in casual sports...</p>
+            <h1>Don't Let the Turf Stay Empty.</h1>
+            <p>Find players, host matches, and connect with sports lovers in your area.</p>
+            <div style="margin-top: 2rem;">
+                <a href="/games" class="btn">Find a Game</a>
+                <a href="/games/new" class="btn-secondary" style="margin-left: 10px; background: white; color: #333;">Host a Match</a>
+            </div>
+        </div>
+    </header>
+
+    <section style="padding: 4rem 0; background-color: #f9fafb; text-align: center;">
+        <div class="container">
+            <h2 style="margin-bottom: 3rem; font-size: 2rem;">How It Works</h2>
             
-            <div class="grid" style="margin-top: 2rem;">
-                <div class="card">
-                    <h3>No More Wasted Bookings</h3>
-                    <p>Our "Find Players" feature ensures you always have a full team before you even book the turf.</p>
+            <div class="grid">
+                <div class="card" style="text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📢</div>
+                    <h3>1. Post a Game</h3>
+                    <p>Booked a turf but short on players? Post your match details, time, and location.</p>
                 </div>
-                <div class="card">
-                    <h3>Real-Time Availability</h3>
-                    <p>Connect directly to turf calendars and book your slot instantly. No more "please call" signs.</p>
+
+                <div class="card" style="text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🤝</div>
+                    <h3>2. Players Join</h3>
+                    <p>Other users see your game and request to join. You see their names on the roster.</p>
                 </div>
-                <div class="card">
-                    <h3>Community First</h3>
-                    <p>Join a community of local players. Rate games, find new friends, and just play more.</p>
+
+                <div class="card" style="text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">💬</div>
+                    <h3>3. Connect & Play</h3>
+                    <p>Click the WhatsApp button to chat instantly and coordinate the game.</p>
                 </div>
             </div>
-
         </div>
-    </main>
+    </section>
 
-    <footer>
-        <p>&copy; 2025 Yeahturf! All rights reserved.</p>
+    <footer style="text-align: center; padding: 2rem; background: #333; color: white; margin-top: auto;">
+        <p>&copy; 2025 Yeahturf! Bangalore.</p>
     </footer>
-    
+
 </body>
 </html>
