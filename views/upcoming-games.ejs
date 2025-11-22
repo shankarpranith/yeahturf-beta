@@ -42,10 +42,17 @@
                     <div class="card">
                         <h3><%= game.title %></h3>
                         <p>
-                            <strong>Sport:</strong> <%= game.sport %> <br>
-                            <strong>Location:</strong> <%= game.location %> <br>
-                            <strong>When:</strong> <%= game.date %> at <%= game.time %>
-                        </p>
+    <strong>Sport:</strong> <%= game.sport %> <br>
+    
+    <strong>Location:</strong> 
+    <a href="https://www.google.com/maps/search/?api=1&query=<%= encodeURIComponent(game.location) %>" 
+       target="_blank" 
+       style="color: #2563eb; text-decoration: none; border-bottom: 1px dashed #2563eb;">
+       📍 <%= game.location %>
+    </a> <br>
+
+    <strong>When:</strong> <%= game.date %> at <%= game.time %>
+</p>
                         
                         <p style="font-size: 1.2rem; font-weight: bold; color: var(--primary-color);">
                             <%= game.playersNeeded %> Spots Open

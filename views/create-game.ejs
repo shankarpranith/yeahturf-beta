@@ -38,6 +38,12 @@
                     <div class="form-group">
                         <label for="location">Location (Turf Name)</label>
                         <input type="text" id="location" name="location" class="form-control" placeholder="e.g. Indiranagar Turf Park" required>
+                        
+                        <div id="map-preview" style="margin-top: 5px; display: none;">
+                            <a href="#" target="_blank" id="map-link" style="font-size: 0.9rem; color: #2563eb; text-decoration: none;">
+                                📍 Check this location on Google Maps
+                            </a>
+                        </div>
                     </div>
 
                     <div class="form-group" style="display: flex; gap: 10px;">
@@ -65,20 +71,31 @@
     <script type="module">
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // Reuse the app initialized in Navbar
-        // We wait 1 second for Navbar to load, or we initialize again safely
         const auth = window.auth || getAuth(); 
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // User is logged in!
-                // Fill the hidden inputs
                 document.getElementById('createdBy').value = user.uid;
                 document.getElementById('creatorEmail').value = user.email;
             } else {
-                // NO USER? KICK THEM OUT!
                 alert("You must be logged in to post a game!");
                 window.location.href = '/login';
+            }
+        });
+
+        // --- NEW: MAP PREVIEW LOGIC ---
+        const locInput = document.getElementById('location');
+        const mapPreview = document.getElementById('map-preview');
+        const mapLink = document.getElementById('map-link');
+
+        locInput.addEventListener('input', (e) => {
+            const val = e.target.value;
+            if (val.length > 3) {
+                mapPreview.style.display = 'block';
+                // Create a Google Maps Search URL
+                mapLink.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(val)}`;
+            } else {
+                mapPreview.style.display = 'none';
             }
         });
     </script>
