@@ -39,22 +39,23 @@ app.get('/contact', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'contact.html'));
 });
 
-// --- AUTH ROUTES (THIS IS WHAT YOU WERE MISSING) ---
+// --- AUTH ROUTES ---
 app.get('/signup', (req, res) => {
     res.render('signup');
 });
 
 app.get('/login', (req, res) => {
-    res.render('login'); // We will create this file next
+    res.render('login');
 });
 
-
 // --- GAME ROUTES ---
+
+// 1. Show 'Create Game' Form
 app.get('/games/new', (req, res) => {
     res.render('create-game');
 });
 
-// 2. HANDLE 'Create Game' Submission
+// 2. Handle 'Create Game' Submission
 app.post('/games', async (req, res) => {
     try {
         const newGame = {
@@ -65,9 +66,12 @@ app.post('/games', async (req, res) => {
             time: req.body.time,
             playersNeeded: parseInt(req.body.playersNeeded),
             
-            // NEW: Save the User Info (No more secret code needed!)
-            createdBy: req.body.createdBy,      // The UID from Firebase
-            creatorEmail: req.body.creatorEmail, // The email
+            // Save Creator Info
+            createdBy: req.body.createdBy,
+            creatorEmail: req.body.creatorEmail,
+            
+            // Initialize empty roster
+            roster: [],
             
             createdAt: admin.firestore.FieldValue.serverTimestamp()
         };
@@ -75,20 +79,28 @@ app.post('/games', async (req, res) => {
         await db.collection('games').add(newGame);
         res.redirect('/games');
     } catch (error) {
-        console.error("Error adding game: ", error);
+        console.error("Error creating game:", error);
         res.status(500).send("Error saving game");
     }
 });
 
+// 3. List Games (With Search & Filter)
 app.get('/games', async (req, res) => {
     try {
         const sportFilter = req.query.sport;
         const searchQuery = req.query.search;
+
         let snapshot = await db.collection('games').orderBy('createdAt', 'desc').get();
         
-        let gamesList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        let gamesList = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
 
-        if (sportFilter) gamesList = gamesList.filter(g => g.sport === sportFilter);
+        if (sportFilter) {
+            gamesList = gamesList.filter(g => g.sport === sportFilter);
+        }
+
         if (searchQuery) {
             const lower = searchQuery.toLowerCase();
             gamesList = gamesList.filter(g => 
@@ -96,38 +108,36 @@ app.get('/games', async (req, res) => {
                 g.location.toLowerCase().includes(lower)
             );
         }
+
         res.render('upcoming-games', { games: gamesList, isSearching: !!searchQuery });
     } catch (error) {
+        console.error("Error listing games:", error);
         res.status(500).send("Error getting games");
     }
 });
 
-// DELETE a game (Updated for Login System)
+// 4. Delete Game (No PIN needed anymore)
 app.post('/games/delete/:id', async (req, res) => {
     try {
         const id = req.params.id;
-        
-        // Simple Delete (We trust the frontend auth for now)
+        // Simple delete (we trust the frontend Auth check for now)
         await db.collection('games').doc(id).delete();
-        
         res.redirect('/games');
-
     } catch (error) {
-        console.error("Error deleting game: ", error);
+        console.error("Error deleting game:", error);
         res.status(500).send("Error deleting game");
     }
 });
 
-// JOIN a game (Add User Name to Roster)
-// JOIN a game (Save Name AND Phone)
+// 5. JOIN Game (With Name & Phone)
 app.post('/games/join/:id', async (req, res) => {
     try {
         const id = req.params.id;
         
-        // Create the player object
+        // Create the player object from the Modal Form
         const newPlayer = {
-            name: req.body.name,
-            phone: req.body.phone
+            name: req.body.name || "Guest",
+            phone: req.body.phone || ""
         };
         
         const gameRef = db.collection('games').doc(id);
@@ -138,8 +148,7 @@ app.post('/games/join/:id', async (req, res) => {
         const game = doc.data();
         const currentRoster = game.roster || [];
 
-        // Check if user is already in (Simple check by name for now)
-        // ideally we check by UID, but name is fine for MVP
+        // Check if player name is already in the list
         const alreadyJoined = currentRoster.some(p => p.name === newPlayer.name);
 
         if (alreadyJoined) {
@@ -168,7 +177,10 @@ app.get('/players/new', (req, res) => {
 
 app.post('/players', async (req, res) => {
     try {
-        await db.collection('players').add(req.body);
+        await db.collection('players').add({
+            ...req.body,
+            createdAt: admin.firestore.FieldValue.serverTimestamp()
+        });
         res.redirect('/players');
     } catch (error) {
         res.status(500).send("Error adding player");
