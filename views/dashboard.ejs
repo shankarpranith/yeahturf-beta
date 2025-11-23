@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dashboard - Yeahturf</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .section-title {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .badge-host {
+            background-color: #dbeafe;
+            color: #1e40af;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .badge-player {
+            background-color: #dcfce7;
+            color: #166534;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            background: #f9fafb;
+            border-radius: 10px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <%- include('partials/navbar') %>
+
+    <main class="main-content">
+        <div class="container">
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h1 id="welcome-msg">My Sports Dashboard</h1>
+                <a href="/games/new" class="btn">+ Post New Game</a>
+            </div>
+
+            <h2 class="section-title">📢 Games I'm Hosting</h2>
+            <div id="hosting-container" class="grid">
+                </div>
+            <div id="hosting-empty" class="empty-state" style="display: none;">
+                <p>You haven't posted any games yet.</p>
+                <a href="/games/new" style="color: var(--primary-color); font-weight: bold;">Host your first match →</a>
+            </div>
+
+            <br><br>
+
+            <h2 class="section-title">🏃 Games I'm Playing</h2>
+            <div id="playing-container" class="grid">
+                </div>
+            <div id="playing-empty" class="empty-state" style="display: none;">
+                <p>You haven't joined any games yet.</p>
+                <a href="/games" style="color: var(--primary-color); font-weight: bold;">Find a game to join →</a>
+            </div>
+
+        </div>
+    </main>
+
+    <script type="module">
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        
+        // VS Code might mark this line as error, IGNORE IT. It is valid EJS.
+        const allGames = <%- JSON.stringify(games) %>;
+        
+        const auth = window.auth || getAuth();
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('welcome-msg').innerText = `Welcome, ${user.email.split('@')[0]}`;
+                renderDashboard(user);
+            } else {
+                window.location.href = '/login';
+            }
+        });
+
+        function renderDashboard(user) {
+            const hostingContainer = document.getElementById('hosting-container');
+            const playingContainer = document.getElementById('playing-container');
+            const userShortName = user.email.split('@')[0];
+
+            let hostedCount = 0;
+            let playedCount = 0;
+
+            allGames.forEach(game => {
+                // --- LOGIC 1: AM I THE HOST? ---
+                if (game.createdBy === user.uid) {
+                    hostedCount++;
+                    hostingContainer.innerHTML += createCardHTML(game, 'HOST');
+                }
+
+                // --- LOGIC 2: AM I IN THE ROSTER? ---
+                else if (game.roster && game.roster.some(player => player.name === userShortName)) {
+                    playedCount++;
+                    playingContainer.innerHTML += createCardHTML(game, 'PLAYER');
+                }
+            });
+
+            if (hostedCount === 0) document.getElementById('hosting-empty').style.display = 'block';
+            if (playedCount === 0) document.getElementById('playing-empty').style.display = 'block';
+        }
+
+        function createCardHTML(game, type) {
+            const badgeClass = type === 'HOST' ? 'badge-host' : 'badge-player';
+            const badgeText = type === 'HOST' ? 'You are Host' : 'Player';
+            
+            // FIXED LINE: Added the missing $ before {encodeURIComponent}
+            const mapLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(game.location)}`;
+
+            return `
+                <div class="card" style="border-left: 5px solid ${type === 'HOST' ? '#3b82f6' : '#22c55e'};">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                        <span class="${badgeClass}">${badgeText}</span>
+                        <small style="color:#666;">${game.date}</small>
+                    </div>
+                    <h3>${game.title}</h3>
+                    <p>
+                        <strong>${game.sport}</strong> at 
+                        <a href="${mapLink}" target="_blank" style="color:#2563eb; text-decoration:none;">${game.location}</a>
+                    </p>
+                    <p>⏰ ${game.time}</p>
+                    
+                    ${type === 'HOST' 
+                        ? `<div style="margin-top:10px; font-size:0.9rem;"><strong>Roster:</strong> ${game.roster ? game.roster.length : 0} players joined</div>` 
+                        : `<div style="margin-top:10px; font-size:0.9rem; color:green;">✓ You are on the list</div>`
+                    }
+                    
+                    <div style="margin-top: 15px;">
+                        <a href="/games" class="btn-secondary" style="width:100%; display:block; text-align:center;">View Details</a>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+
+</body>
+</html>

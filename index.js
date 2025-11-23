@@ -165,6 +165,24 @@ app.post('/games/join/:id', async (req, res) => {
     }
 });
 
+// --- DASHBOARD ROUTE ---
+app.get('/dashboard', async (req, res) => {
+    try {
+        // Fetch all games sorted by date (newest first)
+        const snapshot = await db.collection('games').orderBy('createdAt', 'desc').get();
+        
+        const allGames = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
+        res.render('dashboard', { games: allGames });
+    } catch (error) {
+        console.error("Error loading dashboard:", error);
+        res.status(500).send("Error loading dashboard");
+    }
+});
+
 // --- PLAYER ROUTES ---
 app.get('/players/new', (req, res) => {
     res.render('create-player');
